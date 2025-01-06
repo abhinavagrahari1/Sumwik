@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Transform Wikipedia articles into clear, concise summaries. Get the key points of any Wikipedia article instantly.">
+    <meta name="author" content="Abhinav Agrahari">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="SumWik 📝 | Wikipedia Summarizer">
+    <meta property="og:description" content="Transform Wikipedia articles into clear, concise summaries instantly.">
+    <meta property="og:url" content="https://sumwik.vercel.app">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+    <!-- Title -->
+    <title>SumWik 📝 Wikipedia Summarizer</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Bitter:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1>SumWik</h1>
+            <p class="subtitle">Transform Wikipedia articles into clear, concise summaries</p>
+            <p class="card-subtitle">📝</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Input Section -->
+            <section class="input-section">
+                <div class="input-wrapper">
+                    <input type="url"
+                           id="wikiUrl"
+                           class="url-input"
+                           placeholder="Paste any Wikipedia URL here..."
+                           pattern="https?://.+wikipedia\.org/wiki/.+"
+                           aria-label="Wikipedia URL"
+                           required />
+                </div>
+
+                <div class="button-group">
+                    <button type="button"
+                            id="generateBtn"
+                            class="generate-btn"
+                            aria-label="Generate Summary">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                        Summarize
+                    </button>
+                    <button type="button"
+                            id="randomBtn"
+                            class="generate-btn generate-btn-random"
+                            aria-label="Generate from Random Article">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17.5 12h-15m11.667-4l3.333 4-3.333-4zm3.333 4l-3.333 4 3.333-4z"/>
+                        </svg>
+                        Random Article
+                    </button>
+                </div>
+            </section>
+
+            <!-- Loading State -->
+            <div class="loader" role="status" aria-label="Loading">
+                <span class="loader-dot"></span>
+                <span class="loader-dot"></span>
+                <span class="loader-dot"></span>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error" role="alert"></div>
+
+            <!-- Results Section -->
+            <section class="result">
+                <div class="summary-container">
+                    <h2 class="summary-label">Your Summary</h2>
+                    <div class="summary-content" role="region" aria-label="Generated summary content"></div>
+
+                    <!-- Action Buttons -->
+                    <div class="actions">
+                        <button class="action-btn" onclick="speakSummary()" aria-label="Listen to summary">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M15.5 8H15V16H15.5C18.5 16 21 13.5 21 12S18.5 8 15.5 8Z"/>
+                                <path d="M3 16V8H7L13 4V20L7 16H3Z"/>
+                            </svg>
+                            <span>Listen</span>
+                        </button>
+
+                        <button class="action-btn" onclick="copyToClipboard()" aria-label="Copy to clipboard">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M8 4H16V2H8V4Z"/>
+                                <path d="M16 4H8C6.9 4 6 4.9 6 6V20C6 21.1 6.9 22 8 22H16C17.1 22 18 21.1 18 20V6C18 4.9 17.1 4 16 4Z"/>
+                            </svg>
+                            <span>Copy</span>
+                        </button>
+
+                        <button class="action-btn" onclick="shareAd()" aria-label="Share">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 12V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V12"/>
+                                <path d="M12 2L12 15"/>
+                                <path d="M8 6L12 2L16 6"/>
+                            </svg>
+                            <span>Share</span>
+                        </button>
+
+                        <button class="action-btn" onclick="exportAsHtml()" aria-label="Export as HTML">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 3V17M12 17L7 12M12 17L17 12"/>
+                                <path d="M3 21H21"/>
+                            </svg>
+                            <span>Export</span>
+                        </button>
+
+                        <button class="action-btn" onclick="showSource()" aria-label="View original article">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 6.25278V19.2528M12 6.25278C10.8321 5.47686 9.24649 5 7.5 5C5.75351 5 4.16789 5.47686 3 6.25278V19.2528C4.16789 18.4769 5.75351 18 7.5 18C9.24649 18 10.8321 18.4769 12 19.2528M12 6.25278C13.1679 5.47686 14.7535 5 16.5 5C18.2465 5 19.8321 5.47686 21 6.25278V19.2528C19.8321 18.4769 18.2465 18 16.5 18C14.7535 18 13.1679 18.4769 12 19.2528"/>
+                            </svg>
+                            <span>Original</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Source Modal -->
+        <div id="sourceModal" class="modal" aria-hidden="true" role="dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Original Article</h3>
+                    <button onclick="closeModal()" class="close-btn" aria-label="Close modal">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 6L6 18M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="source-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast" role="alert" aria-live="polite"></div>
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
