@@ -1,6 +1,6 @@
 # SumWik 📝
 
-SumWik is an elegant, user-friendly web application that transforms lengthy Wikipedia articles into clear, concise summaries. Using advanced AI technology, it distills complex information into digestible content while maintaining accuracy and context.
+SumWik(https://sumwik-fe.vercel.app/), is an elegant, user-friendly web application that transforms lengthy Wikipedia articles into clear, concise summaries. Using advanced AI technology, it distills complex information into digestible content while maintaining accuracy and context.
 
 ## ✨ Features
 
